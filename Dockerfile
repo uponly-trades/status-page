@@ -3,7 +3,7 @@ FROM twinproduction/gatus:latest AS gatus
 FROM nginx:alpine
 RUN apk add --no-cache supervisor ca-certificates curl
 
-COPY --from=gatus /app/gatus /app/gatus
+COPY --from=gatus /gatus /app/gatus
 RUN mkdir -p /config && rm -f /etc/nginx/conf.d/default.conf
 
 COPY config.yaml     /config/config.yaml
