@@ -15,7 +15,8 @@ RUN composer install \
     --no-dev \
     --no-interaction \
     --optimize-autoloader \
-    --prefer-dist
+    --prefer-dist \
+    --ignore-platform-reqs
 
 # ── Stage 2: Node / Vite assets ───────────────────────────────────────────
 FROM node:20-alpine AS assets
@@ -28,8 +29,9 @@ RUN npm ci && npm run build
 # ── Stage 3: Runtime ──────────────────────────────────────────────────────
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache nginx supervisor curl \
- && docker-php-ext-install pdo pdo_sqlite mbstring bcmath pcntl ctype fileinfo opcache
+RUN apk add --no-cache nginx supervisor curl icu-dev libzip-dev bzip2-dev \
+ && docker-php-ext-install pdo pdo_sqlite mbstring bcmath pcntl ctype fileinfo opcache intl zip \
+ && docker-php-ext-enable sodium
 
 COPY --from=assets /app /var/www/html
 
