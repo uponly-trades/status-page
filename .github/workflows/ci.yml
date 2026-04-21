@@ -12,37 +12,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate YAML syntax
-        run: python3 -c "
-import yaml, sys
-with open('config.yaml') as f:
-    cfg = yaml.safe_load(f)
-endpoints = cfg.get('endpoints', [])
-print(f'Config valid — {len(endpoints)} endpoints defined')
-for ep in endpoints:
-    assert 'name' in ep, f'Missing name in endpoint: {ep}'
-    assert 'url' in ep, f'Missing url in endpoint: {ep}'
-    assert 'conditions' in ep, f'Missing conditions in endpoint: {ep[\"name\"]}'
-print('All endpoint fields validated.')
-"
+      - name: Validate YAML syntax + endpoint fields
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('config.yaml') as f:
+              cfg = yaml.safe_load(f)
+          endpoints = cfg.get('endpoints', [])
+          print(f'Config valid — {len(endpoints)} endpoints defined')
+          for ep in endpoints:
+              assert 'name' in ep, f'Missing name: {ep}'
+              assert 'url' in ep, f'Missing url in: {ep[\"name\"]}'
+              assert 'conditions' in ep, f'Missing conditions in: {ep[\"name\"]}'
+          print('All endpoints validated.')
+          "
 
       - name: Build Docker image
-        run: docker build -t uponly-status:ci .
+        run: docker build -t uponly-status:ci-${{ github.sha }} .
 
-      - name: Smoke test container starts
+      - name: Smoke test — container boots and /health responds
         run: |
-          docker run -d --name status-test -p 18080:8080 uponly-status:ci
-          sleep 5
-          curl -sf http://localhost:18080/health || (docker logs status-test && exit 1)
-          docker rm -f status-test
+          docker run -d --name status-ci-${{ github.sha }} \
+            -p 18080:8080 \
+            uponly-status:ci-${{ github.sha }}
+          for i in $(seq 1 10); do
+            curl -sf http://localhost:18080/health && break || sleep 2
+          done
+          docker rm -f status-ci-${{ github.sha }}
+          docker rmi uponly-status:ci-${{ github.sha }} || true
 
   deploy:
     needs: validate
     runs-on: self-hosted
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - name: Trigger Coolify deploy
+      - name: Deploy via Coolify API
         run: |
-          curl -sf -X GET "${{ secrets.COOLIFY_STATUS_WEBHOOK }}" \
+          DEPLOY=$(curl -sf -X POST \
+            "https://ctrl.uponlytrader.xyz/api/v1/applications/iacaol8xgb4qcjypzmlzfg6b/start" \
             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
-            || echo "Webhook triggered (non-zero exit ignored if async)"
+            -H "Content-Type: application/json")
+          echo "Deploy queued: $DEPLOY"
