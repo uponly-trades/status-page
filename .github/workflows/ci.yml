@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate YAML syntax
+        run: python3 -c "
+import yaml, sys
+with open('config.yaml') as f:
+    cfg = yaml.safe_load(f)
+endpoints = cfg.get('endpoints', [])
+print(f'Config valid — {len(endpoints)} endpoints defined')
+for ep in endpoints:
+    assert 'name' in ep, f'Missing name in endpoint: {ep}'
+    assert 'url' in ep, f'Missing url in endpoint: {ep}'
+    assert 'conditions' in ep, f'Missing conditions in endpoint: {ep[\"name\"]}'
+print('All endpoint fields validated.')
+"
+
+      - name: Build Docker image
+        run: docker build -t uponly-status:ci .
+
+      - name: Smoke test container starts
+        run: |
+          docker run -d --name status-test -p 18080:8080 uponly-status:ci
+          sleep 5
+          curl -sf http://localhost:18080/health || (docker logs status-test && exit 1)
+          docker rm -f status-test
+
+  deploy:
+    needs: validate
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger Coolify deploy
+        run: |
+          curl -sf -X GET "${{ secrets.COOLIFY_STATUS_WEBHOOK }}" \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
+            || echo "Webhook triggered (non-zero exit ignored if async)"

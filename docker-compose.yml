@@ -1,0 +1,20 @@
+services:
+  gatus:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - gatus-data:/data
+    environment:
+      # Optional: Slack webhook for alerts
+      # SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+      GATUS_LOG_LEVEL: ${GATUS_LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  gatus-data:
