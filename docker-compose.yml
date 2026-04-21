@@ -15,6 +15,7 @@ services:
       NEXT_PUBLIC_URL: ${APP_URL:-https://status.uponlytrader.xyz}
       HOSTNAME: "0.0.0.0"
       PORT: "3000"
+      AUTH_TRUST_HOST: "true"
       STRIPE_SECRET_KEY: dummy
       PROJECT_ID_VERCEL: dummy
       TEAM_ID_VERCEL: dummy
@@ -62,6 +63,7 @@ services:
       NEXT_PUBLIC_URL: ${DASHBOARD_URL:-http://localhost:3001}
       HOSTNAME: "0.0.0.0"
       PORT: "3000"
+      AUTH_TRUST_HOST: "true"
       STRIPE_SECRET_KEY: dummy
       PROJECT_ID_VERCEL: dummy
       TEAM_ID_VERCEL: dummy
@@ -87,6 +89,7 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY:-dummy}
       UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL:-http://localhost}
       UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-dummy}
+      GCP_PROJECT_ID: dummy
       NODE_ENV: production
     depends_on:
       - libsql
