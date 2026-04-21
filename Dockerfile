@@ -24,7 +24,7 @@ FROM node:20-alpine AS assets
 WORKDIR /app
 COPY --from=vendor /app /app
 
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
 # ── Stage 3: Runtime ──────────────────────────────────────────────────────
 FROM php:8.2-fpm-alpine
