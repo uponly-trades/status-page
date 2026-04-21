@@ -1,13 +1,37 @@
 services:
-  status:
-    build: .
+  cachet:
+    image: cachet-v3:local
     restart: unless-stopped
-    ports:
-      - "8080:8080"
+    volumes:
+      - cachet-db:/var/www/html/database
+      - cachet-storage:/var/www/html/storage/app
     environment:
-      GATUS_LOG_LEVEL: ${GATUS_LOG_LEVEL:-INFO}
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      APP_KEY: ${APP_KEY}
+      APP_URL: https://status.uponlytrader.xyz
+    networks:
+      - coolify
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "coolify"
+      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
+      traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: "true"
+      traefik.http.middlewares.gzip.compress: "true"
+      traefik.http.routers.https-cachet.entryPoints: "https"
+      traefik.http.routers.https-cachet.rule: "Host(`status.uponlytrader.xyz`)"
+      traefik.http.routers.https-cachet.tls: "true"
+      traefik.http.routers.https-cachet.tls.certresolver: "letsencrypt"
+      traefik.http.routers.https-cachet.service: "https-cachet"
+      traefik.http.routers.https-cachet.middlewares: "gzip"
+      traefik.http.services.https-cachet.loadbalancer.server.port: "8000"
+      traefik.http.routers.http-cachet.entryPoints: "http"
+      traefik.http.routers.http-cachet.rule: "Host(`status.uponlytrader.xyz`)"
+      traefik.http.routers.http-cachet.middlewares: "redirect-to-https"
+      traefik.http.services.http-cachet.loadbalancer.server.port: "8000"
+
+volumes:
+  cachet-db:
+  cachet-storage:
+
+networks:
+  coolify:
+    external: true
