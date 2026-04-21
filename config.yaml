@@ -1,5 +1,5 @@
 web:
-  port: 8080
+  port: 8081
 
 ui:
   title: UpOnly Status
@@ -30,14 +30,6 @@ endpoints:
         success-threshold: 1
         description: "Trading App is down"
         send-on-resolved: true
-
-  - name: PnL Dashboard
-    group: Frontend
-    url: "https://pnl.uponlytrader.xyz"
-    interval: 2m
-    conditions:
-      - "[STATUS] == 200"
-      - "[RESPONSE_TIME] < 3000"
 
   # ── Backend API ───────────────────────────────────────────────────────────
 

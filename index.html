@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpOnly Status</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: #f3f4f6;
+      min-height: 100vh;
+      padding: 48px 16px 64px;
+      color: #111827;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: 640px; margin: 0 auto; }
+
+    /* ── Header ─────────────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .header-logo svg { width: 20px; height: 20px; }
+    .header h1 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Status banner ──────────────────────────── */
+    .banner {
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 10px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .banner.up       { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .banner.down     { background: #fef2f2; border: 1px solid #fecaca; }
+    .banner.partial  { background: #fffbeb; border: 1px solid #fde68a; }
+
+    .banner-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .banner.up      .banner-dot { background: #16a34a; color: #fff; }
+    .banner.down    .banner-dot { background: #dc2626; color: #fff; }
+    .banner.partial .banner-dot { background: #d97706; color: #fff; }
+
+    .banner-text h2 { font-size: 15px; font-weight: 600; line-height: 1.4; }
+    .banner.up      .banner-text h2 { color: #14532d; }
+    .banner.down    .banner-text h2 { color: #7f1d1d; }
+    .banner.partial .banner-text h2 { color: #78350f; }
+
+    .banner-text p  { font-size: 12px; margin-top: 2px; }
+    .banner.up      .banner-text p { color: #166534; }
+    .banner.down    .banner-text p { color: #991b1b; }
+    .banner.partial .banner-text p { color: #92400e; }
+
+    /* ── Services card ──────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+    }
+
+    .card-label {
+      padding: 10px 20px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* ── Service row ────────────────────────────── */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .row:last-child { border-bottom: none; }
+
+    .row-name {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #111827;
+    }
+    .row-group {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .badge-dot.up       { background: #16a34a; }
+    .badge-dot.down     { background: #dc2626; }
+    .badge-dot.partial  { background: #d97706; }
+    .badge-dot.unknown  { background: #d1d5db; }
+    .badge-label {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    /* ── Footer ─────────────────────────────────── */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 11.5px;
+      color: #9ca3af;
+    }
+    .footer a { color: inherit; text-decoration: none; }
+    .footer a:hover { color: #6b7280; }
+
+    /* ── Skeleton loader ────────────────────────── */
+    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+    .sk { background: #e5e7eb; border-radius: 4px; animation: pulse 1.5s ease infinite; }
+    .sk-name  { height: 13px; width: 130px; }
+    .sk-badge { height: 10px; width: 68px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="header">
+      <div class="header-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+        <h1>UpOnly Trader Status</h1>
+      </div>
+    </div>
+
+    <div id="banner" class="banner up">
+      <div class="banner-dot">✓</div>
+      <div class="banner-text">
+        <h2>Checking services…</h2>
+        <p>Fetching latest status</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Services</div>
+      <div id="list">
+        <div class="row"><div><div class="sk sk-name"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+        <div class="row"><div><div class="sk sk-name" style="width:100px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+        <div class="row"><div><div class="sk sk-name" style="width:150px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+        <div class="row"><div><div class="sk sk-name" style="width:115px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+        <div class="row"><div><div class="sk sk-name" style="width:90px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+      </div>
+    </div>
+
+    <p class="footer">
+      <a href="https://uponlytrader.xyz">uponlytrader.xyz</a>
+      &nbsp;·&nbsp;
+      <span id="ts">Refreshes every 30s</span>
+    </p>
+
+  </div>
+
+  <script>
+    function statusOf(ep) {
+      if (!ep.results || !ep.results.length) return { cls: 'unknown', label: 'Unknown' };
+      return ep.results[0].success
+        ? { cls: 'up',   label: 'Operational' }
+        : { cls: 'down', label: 'Disruption'  };
+    }
+
+    function render(data) {
+      const downCount = data.filter(ep => statusOf(ep).cls !== 'up').length;
+      const bannerCls = downCount === 0 ? 'up' : downCount === data.length ? 'down' : 'partial';
+      const bannerMsg = downCount === 0
+        ? 'All Systems Operational'
+        : downCount === data.length ? 'Major Outage' : 'Partial Outage';
+
+      const b = document.getElementById('banner');
+      b.className = 'banner ' + bannerCls;
+      b.querySelector('.banner-dot').textContent = downCount === 0 ? '✓' : '!';
+      b.querySelector('h2').textContent = bannerMsg;
+      b.querySelector('p').textContent  = 'Last checked ' + new Date().toLocaleTimeString();
+
+      document.getElementById('list').innerHTML = data.map(ep => {
+        const s = statusOf(ep);
+        return `<div class="row">
+          <div>
+            <div class="row-name">${ep.name}</div>
+            ${ep.group ? `<div class="row-group">${ep.group}</div>` : ''}
+          </div>
+          <div class="badge">
+            <span class="badge-dot ${s.cls}"></span>
+            <span class="badge-label">${s.label}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    }
+
+    async function refresh() {
+      try {
+        const r = await fetch('/api/v1/endpoints/statuses?t=' + Date.now());
+        if (!r.ok) throw new Error(r.status);
+        render(await r.json());
+      } catch (_) {}
+    }
+
+    refresh();
+    setInterval(refresh, 30000);
+  </script>
+</body>
+</html>
