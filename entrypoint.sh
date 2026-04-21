@@ -17,7 +17,7 @@ DB_DATABASE=/var/www/html/database/database.sqlite
 
 CACHE_STORE=database
 SESSION_DRIVER=database
-QUEUE_CONNECTION=database
+QUEUE_CONNECTION=sync
 
 LOG_CHANNEL=stderr
 LOG_LEVEL=warning
