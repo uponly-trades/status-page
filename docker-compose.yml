@@ -24,6 +24,7 @@ services:
       UNKEY_TOKEN: dummy
       UNKEY_API_ID: dummy
       CRON_SECRET: dummy
+      SELF_HOST_SLUG: ${SELF_HOST_SLUG:-uponlytrader}
     depends_on:
       - libsql
     networks:
@@ -35,12 +36,15 @@ services:
       traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
       traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: "true"
       traefik.http.middlewares.gzip.compress: "true"
+      traefik.http.middlewares.redirect-status-root.redirectregex.regex: '^https://status.uponlytrader.xyz/?$'
+      traefik.http.middlewares.redirect-status-root.redirectregex.replacement: "https://status.uponlytrader.xyz/uponlytrader/en"
+      traefik.http.middlewares.redirect-status-root.redirectregex.permanent: "false"
       traefik.http.routers.https-openstatus.entryPoints: "https"
       traefik.http.routers.https-openstatus.rule: "Host(`status.uponlytrader.xyz`)"
       traefik.http.routers.https-openstatus.tls: "true"
       traefik.http.routers.https-openstatus.tls.certresolver: "letsencrypt"
       traefik.http.routers.https-openstatus.service: "https-openstatus"
-      traefik.http.routers.https-openstatus.middlewares: "gzip"
+      traefik.http.routers.https-openstatus.middlewares: "gzip,redirect-status-root"
       traefik.http.services.https-openstatus.loadbalancer.server.port: "3000"
       traefik.http.routers.http-openstatus.entryPoints: "http"
       traefik.http.routers.http-openstatus.rule: "Host(`status.uponlytrader.xyz`)"
