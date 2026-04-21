@@ -1,3 +1,3 @@
-FROM twinproduction/gatus:v5
+FROM twinproduction/gatus:latest
 
 COPY config.yaml /config/config.yaml
