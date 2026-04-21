@@ -1,37 +1,114 @@
 services:
-  cachet:
-    image: cachet-v3:local
-    restart: unless-stopped
-    volumes:
-      - cachet-db:/var/www/html/database
-      - cachet-storage:/var/www/html/storage/app
+  status-page:
+    build:
+      context: .
+      dockerfile: apps/status-page/Dockerfile
     environment:
-      APP_KEY: ${APP_KEY}
-      APP_URL: https://status.uponlytrader.xyz
+      DATABASE_URL: http://libsql:8080
+      DATABASE_AUTH_TOKEN: ${DATABASE_AUTH_TOKEN}
+      AUTH_SECRET: ${AUTH_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY:-dummy}
+      UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL:-http://localhost}
+      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-dummy}
+      SELF_HOST: "true"
+      NODE_ENV: production
+      NEXT_PUBLIC_URL: ${APP_URL:-https://status.uponlytrader.xyz}
+      HOSTNAME: "0.0.0.0"
+      PORT: "3000"
+      STRIPE_SECRET_KEY: dummy
+      PROJECT_ID_VERCEL: dummy
+      TEAM_ID_VERCEL: dummy
+      VERCEL_AUTH_BEARER_TOKEN: dummy
+      TINY_BIRD_API_KEY: dummy
+      UNKEY_TOKEN: dummy
+      UNKEY_API_ID: dummy
+      CRON_SECRET: dummy
+    depends_on:
+      - libsql
     networks:
       - coolify
+      - internal
     labels:
       traefik.enable: "true"
       traefik.docker.network: "coolify"
       traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
       traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: "true"
       traefik.http.middlewares.gzip.compress: "true"
-      traefik.http.routers.https-cachet.entryPoints: "https"
-      traefik.http.routers.https-cachet.rule: "Host(`status.uponlytrader.xyz`)"
-      traefik.http.routers.https-cachet.tls: "true"
-      traefik.http.routers.https-cachet.tls.certresolver: "letsencrypt"
-      traefik.http.routers.https-cachet.service: "https-cachet"
-      traefik.http.routers.https-cachet.middlewares: "gzip"
-      traefik.http.services.https-cachet.loadbalancer.server.port: "8000"
-      traefik.http.routers.http-cachet.entryPoints: "http"
-      traefik.http.routers.http-cachet.rule: "Host(`status.uponlytrader.xyz`)"
-      traefik.http.routers.http-cachet.middlewares: "redirect-to-https"
-      traefik.http.services.http-cachet.loadbalancer.server.port: "8000"
+      traefik.http.routers.https-openstatus.entryPoints: "https"
+      traefik.http.routers.https-openstatus.rule: "Host(`status.uponlytrader.xyz`)"
+      traefik.http.routers.https-openstatus.tls: "true"
+      traefik.http.routers.https-openstatus.tls.certresolver: "letsencrypt"
+      traefik.http.routers.https-openstatus.service: "https-openstatus"
+      traefik.http.routers.https-openstatus.middlewares: "gzip"
+      traefik.http.services.https-openstatus.loadbalancer.server.port: "3000"
+      traefik.http.routers.http-openstatus.entryPoints: "http"
+      traefik.http.routers.http-openstatus.rule: "Host(`status.uponlytrader.xyz`)"
+      traefik.http.routers.http-openstatus.middlewares: "redirect-to-https"
+      traefik.http.services.http-openstatus.loadbalancer.server.port: "3000"
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: apps/dashboard/Dockerfile
+    environment:
+      DATABASE_URL: http://libsql:8080
+      DATABASE_AUTH_TOKEN: ${DATABASE_AUTH_TOKEN}
+      AUTH_SECRET: ${AUTH_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY:-dummy}
+      UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL:-http://localhost}
+      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-dummy}
+      SELF_HOST: "true"
+      NODE_ENV: production
+      NEXT_PUBLIC_URL: ${DASHBOARD_URL:-http://localhost:3001}
+      HOSTNAME: "0.0.0.0"
+      PORT: "3000"
+      STRIPE_SECRET_KEY: dummy
+      PROJECT_ID_VERCEL: dummy
+      TEAM_ID_VERCEL: dummy
+      VERCEL_AUTH_BEARER_TOKEN: dummy
+      TINY_BIRD_API_KEY: dummy
+      UNKEY_TOKEN: dummy
+      UNKEY_API_ID: dummy
+      CRON_SECRET: dummy
+    ports:
+      - "3001:3000"
+    depends_on:
+      - libsql
+    networks:
+      - internal
+
+  workflows:
+    build:
+      context: .
+      dockerfile: apps/workflows/Dockerfile
+    environment:
+      DATABASE_URL: http://libsql:8080
+      DATABASE_AUTH_TOKEN: ${DATABASE_AUTH_TOKEN}
+      RESEND_API_KEY: ${RESEND_API_KEY:-dummy}
+      UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL:-http://localhost}
+      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-dummy}
+      NODE_ENV: production
+    depends_on:
+      - libsql
+    networks:
+      - internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  libsql:
+    image: ghcr.io/tursodatabase/libsql-server:latest
+    environment:
+      SQLD_NODE: primary
+    volumes:
+      - libsql-data:/var/lib/sqld
+    networks:
+      - internal
 
 volumes:
-  cachet-db:
-  cachet-storage:
+  libsql-data:
 
 networks:
   coolify:
     external: true
+  internal:
+    driver: bridge
