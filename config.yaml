@@ -10,8 +10,7 @@ ui:
       link: https://app.uponlytrader.xyz
 
 storage:
-  type: sqlite
-  path: /data/gatus.db
+  type: memory
 
 # ── Service checks ────────────────────────────────────────────────────────────
 
