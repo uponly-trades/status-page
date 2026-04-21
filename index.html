@@ -9,35 +9,20 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-      background: #f3f4f6;
+      background: #0f172a;
       min-height: 100vh;
       padding: 48px 16px 64px;
-      color: #111827;
+      color: #f1f5f9;
       -webkit-font-smoothing: antialiased;
     }
 
     .wrap { max-width: 640px; margin: 0 auto; }
 
     /* ── Header ─────────────────────────────────── */
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .header-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .header-logo svg { width: 20px; height: 20px; }
-    .header h1 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
-      letter-spacing: -0.01em;
-    }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { font-size: 14px; font-weight: 600; color: #94a3b8; letter-spacing: -0.01em; }
 
-    /* ── Status banner ──────────────────────────── */
+    /* ── Banner ─────────────────────────────────── */
     .banner {
       border-radius: 12px;
       padding: 20px 24px;
@@ -45,122 +30,115 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 10px;
-      transition: background 0.3s, border-color 0.3s;
     }
-    .banner.up       { background: #f0fdf4; border: 1px solid #bbf7d0; }
-    .banner.down     { background: #fef2f2; border: 1px solid #fecaca; }
-    .banner.partial  { background: #fffbeb; border: 1px solid #fde68a; }
+    .banner.up      { background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.2); }
+    .banner.down    { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.2); }
+    .banner.partial { background: rgba(251,191,36,.08);  border: 1px solid rgba(251,191,36,.2); }
 
     .banner-dot {
       width: 36px; height: 36px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-      flex-shrink: 0;
+      font-size: 16px; flex-shrink: 0;
     }
-    .banner.up      .banner-dot { background: #16a34a; color: #fff; }
-    .banner.down    .banner-dot { background: #dc2626; color: #fff; }
-    .banner.partial .banner-dot { background: #d97706; color: #fff; }
+    .banner.up      .banner-dot { background: #4ade80; color: #052e16; }
+    .banner.down    .banner-dot { background: #f87171; color: #fff; }
+    .banner.partial .banner-dot { background: #fbbf24; color: #1c1917; }
 
-    .banner-text h2 { font-size: 15px; font-weight: 600; line-height: 1.4; }
-    .banner.up      .banner-text h2 { color: #14532d; }
-    .banner.down    .banner-text h2 { color: #7f1d1d; }
-    .banner.partial .banner-text h2 { color: #78350f; }
+    .banner-text h2 { font-size: 15px; font-weight: 600; }
+    .banner.up      .banner-text h2 { color: #4ade80; }
+    .banner.down    .banner-text h2 { color: #f87171; }
+    .banner.partial .banner-text h2 { color: #fbbf24; }
+    .banner-text p  { font-size: 12px; margin-top: 2px; color: #94a3b8; }
 
-    .banner-text p  { font-size: 12px; margin-top: 2px; }
-    .banner.up      .banner-text p { color: #166534; }
-    .banner.down    .banner-text p { color: #991b1b; }
-    .banner.partial .banner-text p { color: #92400e; }
-
-    /* ── Services card ──────────────────────────── */
+    /* ── Card ───────────────────────────────────── */
     .card {
-      background: #fff;
+      background: #1e293b;
       border-radius: 12px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #334155;
       overflow: hidden;
     }
-
     .card-label {
       padding: 10px 20px;
-      font-size: 10.5px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9ca3af;
-      border-bottom: 1px solid #f3f4f6;
+      font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: #64748b;
+      border-bottom: 1px solid #334155;
     }
 
     /* ── Service row ────────────────────────────── */
     .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 20px;
-      border-bottom: 1px solid #f3f4f6;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(51,65,85,.5);
     }
     .row:last-child { border-bottom: none; }
 
-    .row-name {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: #111827;
-    }
-    .row-group {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
-
-    .badge {
+    .row-top {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-      margin-left: 16px;
+      justify-content: space-between;
+    }
+    .row-name  { font-size: 13.5px; font-weight: 500; color: #f1f5f9; }
+    .row-group { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    .badge {
+      display: flex; align-items: center;
+      gap: 6px; flex-shrink: 0; margin-left: 16px;
     }
     .badge-dot {
       width: 7px; height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
+      border-radius: 50%; flex-shrink: 0;
     }
-    .badge-dot.up       { background: #16a34a; }
-    .badge-dot.down     { background: #dc2626; }
-    .badge-dot.partial  { background: #d97706; }
-    .badge-dot.unknown  { background: #d1d5db; }
-    .badge-label {
-      font-size: 12px;
-      color: #6b7280;
+    .badge-dot.up      { background: #4ade80; }
+    .badge-dot.down    { background: #f87171; }
+    .badge-dot.partial { background: #fbbf24; }
+    .badge-dot.unknown { background: #475569; }
+    .badge-label { font-size: 12px; color: #94a3b8; }
+
+    /* ── Uptime bars ─────────────────────────────── */
+    .bars-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .bars {
+      display: flex;
+      gap: 2px;
+      flex: 1;
+    }
+    .bar {
+      flex: 1;
+      height: 22px;
+      border-radius: 2px;
+      cursor: default;
+      transition: opacity .15s;
+    }
+    .bar:hover { opacity: .75; }
+    .bar.up    { background: #22c55e; }
+    .bar.down  { background: #ef4444; }
+    .bar.empty { background: #1e3a5f; }
+
+    .bars-meta {
+      font-size: 11px; color: #64748b;
+      white-space: nowrap; flex-shrink: 0;
+      min-width: 32px; text-align: right;
     }
 
     /* ── Footer ─────────────────────────────────── */
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 11.5px;
-      color: #9ca3af;
-    }
+    .footer { margin-top: 20px; text-align: center; font-size: 11.5px; color: #64748b; }
     .footer a { color: inherit; text-decoration: none; }
-    .footer a:hover { color: #6b7280; }
+    .footer a:hover { color: #94a3b8; }
 
-    /* ── Skeleton loader ────────────────────────── */
-    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
-    .sk { background: #e5e7eb; border-radius: 4px; animation: pulse 1.5s ease infinite; }
-    .sk-name  { height: 13px; width: 130px; }
-    .sk-badge { height: 10px; width: 68px; }
+    /* ── Skeleton ───────────────────────────────── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
+    .sk { background: #334155; border-radius: 4px; animation: pulse 1.5s ease infinite; }
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <div class="header">
-      <div class="header-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-          <polyline points="17 6 23 6 23 12"/>
-        </svg>
-        <h1>UpOnly Trader Status</h1>
-      </div>
-    </div>
+    <div class="header"><h1>UpOnly Trader Status</h1></div>
 
     <div id="banner" class="banner up">
       <div class="banner-dot">✓</div>
@@ -173,11 +151,27 @@
     <div class="card">
       <div class="card-label">Services</div>
       <div id="list">
-        <div class="row"><div><div class="sk sk-name"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
-        <div class="row"><div><div class="sk sk-name" style="width:100px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
-        <div class="row"><div><div class="sk sk-name" style="width:150px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
-        <div class="row"><div><div class="sk sk-name" style="width:115px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
-        <div class="row"><div><div class="sk sk-name" style="width:90px"></div></div><div class="badge"><div class="sk sk-badge"></div></div></div>
+        <div class="row">
+          <div class="row-top">
+            <div><div class="sk" style="height:13px;width:130px"></div></div>
+            <div class="badge"><div class="sk" style="height:10px;width:70px"></div></div>
+          </div>
+          <div class="bars-row"><div class="sk" style="height:22px;flex:1;border-radius:2px"></div></div>
+        </div>
+        <div class="row">
+          <div class="row-top">
+            <div><div class="sk" style="height:13px;width:100px"></div></div>
+            <div class="badge"><div class="sk" style="height:10px;width:70px"></div></div>
+          </div>
+          <div class="bars-row"><div class="sk" style="height:22px;flex:1;border-radius:2px"></div></div>
+        </div>
+        <div class="row">
+          <div class="row-top">
+            <div><div class="sk" style="height:13px;width:155px"></div></div>
+            <div class="badge"><div class="sk" style="height:10px;width:70px"></div></div>
+          </div>
+          <div class="bars-row"><div class="sk" style="height:22px;flex:1;border-radius:2px"></div></div>
+        </div>
       </div>
     </div>
 
@@ -190,37 +184,55 @@
   </div>
 
   <script>
+    const N = 30;
+
     function statusOf(ep) {
-      if (!ep.results || !ep.results.length) return { cls: 'unknown', label: 'Unknown' };
+      if (!ep.results?.length) return { cls: 'unknown', label: 'Unknown' };
       return ep.results[0].success
         ? { cls: 'up',   label: 'Operational' }
         : { cls: 'down', label: 'Disruption'  };
     }
 
+    function bars(results) {
+      const filled = results?.length
+        ? [...results].reverse().map(r =>
+            `<div class="bar ${r.success ? 'up' : 'down'}" title="${new Date(r.timestamp).toLocaleString()}"></div>`)
+        : [];
+      const empty = Array(Math.max(0, N - filled.length))
+        .fill('<div class="bar empty"></div>');
+      const pct = results?.length
+        ? Math.round(results.filter(r => r.success).length / results.length * 100) + '%'
+        : '—';
+      return `<div class="bars">${[...empty, ...filled].join('')}</div>
+              <span class="bars-meta">${pct}</span>`;
+    }
+
     function render(data) {
       const downCount = data.filter(ep => statusOf(ep).cls !== 'up').length;
-      const bannerCls = downCount === 0 ? 'up' : downCount === data.length ? 'down' : 'partial';
-      const bannerMsg = downCount === 0
-        ? 'All Systems Operational'
-        : downCount === data.length ? 'Major Outage' : 'Partial Outage';
+      const cls = downCount === 0 ? 'up' : downCount === data.length ? 'down' : 'partial';
 
       const b = document.getElementById('banner');
-      b.className = 'banner ' + bannerCls;
+      b.className = 'banner ' + cls;
       b.querySelector('.banner-dot').textContent = downCount === 0 ? '✓' : '!';
-      b.querySelector('h2').textContent = bannerMsg;
-      b.querySelector('p').textContent  = 'Last checked ' + new Date().toLocaleTimeString();
+      b.querySelector('h2').textContent =
+        downCount === 0 ? 'All Systems Operational' :
+        downCount === data.length ? 'Major Outage' : 'Partial Outage';
+      b.querySelector('p').textContent = 'Last checked ' + new Date().toLocaleTimeString();
 
       document.getElementById('list').innerHTML = data.map(ep => {
         const s = statusOf(ep);
         return `<div class="row">
-          <div>
-            <div class="row-name">${ep.name}</div>
-            ${ep.group ? `<div class="row-group">${ep.group}</div>` : ''}
+          <div class="row-top">
+            <div>
+              <div class="row-name">${ep.name}</div>
+              ${ep.group ? `<div class="row-group">${ep.group}</div>` : ''}
+            </div>
+            <div class="badge">
+              <span class="badge-dot ${s.cls}"></span>
+              <span class="badge-label">${s.label}</span>
+            </div>
           </div>
-          <div class="badge">
-            <span class="badge-dot ${s.cls}"></span>
-            <span class="badge-label">${s.label}</span>
-          </div>
+          <div class="bars-row">${bars(ep.results)}</div>
         </div>`;
       }).join('');
 
