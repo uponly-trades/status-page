@@ -18,7 +18,7 @@ RUN composer install \
 # ── Stage 2: Runtime ──────────────────────────────────────────────────────
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache nginx supervisor curl icu-dev libzip-dev bzip2-dev \
+RUN apk add --no-cache nginx supervisor curl sqlite-dev icu-dev libzip-dev \
  && docker-php-ext-install pdo pdo_sqlite mbstring bcmath pcntl ctype fileinfo opcache intl zip \
  && docker-php-ext-enable sodium
 
