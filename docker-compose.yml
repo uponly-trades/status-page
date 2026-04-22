@@ -99,6 +99,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  checker:
+    image: node:20-alpine
+    environment:
+      DATABASE_URL: http://libsql:8080
+      DATABASE_AUTH_TOKEN: ${DATABASE_AUTH_TOKEN}
+      CHECK_INTERVAL_SECONDS: "60"
+    volumes:
+      - ./apps/checker:/app
+    command: node /app/index.mjs
+    depends_on:
+      - libsql
+    networks:
+      - internal
+    restart: unless-stopped
+
   libsql:
     image: ghcr.io/tursodatabase/libsql-server:latest
     environment:
